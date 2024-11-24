@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Restaurant } from "../models/restaurant.model";
 import { Multer } from "multer";
 import uploadImageOnCloudinary from "../utils/imageUpload";
+import { Order } from "../models/order.model";
 // import { Document } from "mongoose";
 // import { uploadImageOnCloudinary } from "../utils/imageUpload";
 
@@ -120,6 +121,30 @@ export const getRestaurantOrder = async (req: Request, res: Response) => {
     return res.status(200).json({
       success: true,
       orders,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    order.status = status;
+    await order.save();
+    return res.status(200).json({
+      success: true,
+      status: order.status,
+      message: "Status updated",
     });
   } catch (error) {
     console.log(error);
