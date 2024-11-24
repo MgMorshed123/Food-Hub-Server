@@ -25,8 +25,37 @@ export const signUp = async (req: Request, res: Response) => {
       verificationToken,
       verificationTokenExpiresAt: Date.now() * 24 * 60 * 60 * 1000,
     });
+
+    // jwt token
+    // await sendVerificationEmail(email, verification)
+
+    const userWithOutPassword = await User.findOne({ email }).select(
+      "-password"
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Account creted successfully",
+      user: userWithOutPassword,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect email or Password",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Interna server error" });
   }
 };
