@@ -1,6 +1,7 @@
 import mongoose, { Document } from "mongoose";
 
 export interface Imenu {
+  //   id: mongoose.Schema.Types.ObjectId;
   name: string;
   description: string;
   price: number;
