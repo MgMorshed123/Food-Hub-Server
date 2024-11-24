@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import cloudinary from "../utils/cloudinary";
 export const signUp = async (req: Request, res: Response) => {
   try {
     const { fullname, email, password, contact } = req.body;
