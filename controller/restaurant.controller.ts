@@ -1,7 +1,17 @@
 import { Request, Response } from "express";
 import { Restaurant } from "../models/restaurant.model";
 import { Multer } from "multer";
-import { uploadImageOnCloudinary } from "../utils/imageUpload";
+import uploadImageOnCloudinary from "../utils/imageUpload";
+// import { Document } from "mongoose";
+// import { uploadImageOnCloudinary } from "../utils/imageUpload";
+
+declare global {
+  namespace Express {
+    interface ParamsDictionary {
+      id: string;
+    }
+  }
+}
 
 export const createRestaurant = async (req: Request, res: Response) => {
   try {
@@ -35,6 +45,25 @@ export const createRestaurant = async (req: Request, res: Response) => {
       success: true,
       message: "Restaurant Added",
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getRestaurant = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.id }).populate(
+      "menus"
+    );
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        restaurant: [],
+        message: "Restaurant not found",
+      });
+    }
+    return res.status(200).json({ success: true, restaurant });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
