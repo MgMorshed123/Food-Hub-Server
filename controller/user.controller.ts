@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 export const signUp = async (req: Request, res: Response) => {
   try {
     const { fullname, email, password, contact } = req.body;
@@ -125,4 +126,26 @@ export const logout = async (_: Request, res: Response) => {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User doesn't exist",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(40).toString("hex");
+    const resetTokenExpiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
+    await user.save();
+  } catch (error) {}
 };
