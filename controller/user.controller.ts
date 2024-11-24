@@ -61,9 +61,24 @@ export const login = async (req: Request, res: Response) => {
     if (!isPasswordMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect email or password",
+        message: "Incorrect  password",
       });
     }
+
+    user.lastLogin = new Date();
+    await user.save();
+
+    //  send user
+
+    const userWithOutPassword = await User.findOne({ email }).select(
+      "-password"
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Welcome Back ${user.fullname}`,
+      user: userWithOutPassword,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Interna server error" });
   }
