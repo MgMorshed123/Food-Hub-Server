@@ -5,6 +5,7 @@ import crypto from "crypto";
 import cloudinary from "../utils/cloudinary";
 import { generateVerificationCode } from "../utils/generateVerificationCode";
 import { generateToken } from "../utils/generateToken";
+import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/email";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -33,7 +34,8 @@ export const signUp = async (req: Request, res: Response) => {
 
     generateToken(res, user);
     // jwt token
-    // await sendVerificationEmail(email, verification)
+
+    await sendVerificationEmail(email, verificationToken);
 
     const userWithOutPassword = await User.findOne({ email }).select(
       "-password"
@@ -110,7 +112,8 @@ export const VerifyEmail = async (req: Request, res: Response) => {
     user.verificationTokenExpiresAt = undefined;
     await user.save();
 
-    // await sendWelcomeEmail
+    await sendWelcomeEmail(user.email, user.fullname);
+
     return res.status(200).json({
       success: true,
       message: "Email verified successfully.",
