@@ -3,6 +3,9 @@ import { User } from "../models/user.model";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import cloudinary from "../utils/cloudinary";
+import { generateVerificationCode } from "../utils/generateVerificationCode";
+import { generateToken } from "../utils/generateToken";
+
 export const signUp = async (req: Request, res: Response) => {
   try {
     const { fullname, email, password, contact } = req.body;
@@ -17,7 +20,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const verificationToken = "";
+    const verificationToken = generateVerificationCode();
 
     user = await User.create({
       fullname,
@@ -28,6 +31,7 @@ export const signUp = async (req: Request, res: Response) => {
       verificationTokenExpiresAt: Date.now() * 24 * 60 * 60 * 1000,
     });
 
+    generateToken(res, user);
     // jwt token
     // await sendVerificationEmail(email, verification)
 
@@ -228,6 +232,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     // upload image on cloudinary
     let cloudResponse: any;
     cloudResponse = await cloudinary.uploader.upload(profilePicture);
+
     const updatedData = {
       fullname,
       email,
