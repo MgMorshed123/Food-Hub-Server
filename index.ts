@@ -4,6 +4,8 @@ import connectDB from "./db/connectDB";
 import userRoutes from "./routes/user.route";
 import bodyParser from "body-parser";
 import restaurantRoute from "./routes/restaurant.route";
+import menuRoute from "./routes/restaurant.route";
+
 dotenv.config();
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -22,6 +24,7 @@ app.use(cors(corsOptions));
 //
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/restaurant", restaurantRoute);
+app.use("/api/v1/menu", menuRoute);
 app.listen(PORT, () => {
   connectDB();
   console.log(`Server listening at port ${PORT}`);
