@@ -1,41 +1,11 @@
-import mongoose, { Document } from "mongoose";
+import express from "express";
+import upload from "../middlewares/multer";
+import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { addMenu, editMenu } from "../controller/menu.controller";
 
-export interface Imenu {
-  //   id: mongoose.Schema.Types.ObjectId;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
+const router = express.Router();
 
-export interface ImenuDocument extends Imenu, Document {
-  createdAt: Date;
-  updatedAt: Date;
-}
+router.route("/").post(isAuthenticated, upload.single("image"), addMenu);
+router.route("/:id").put(isAuthenticated, upload.single("image"), editMenu);
 
-const menuSchema = new mongoose.Schema<ImenuDocument>(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-
-    description: {
-      type: String,
-      required: true,
-    },
-
-    price: {
-      type: Number,
-      required: true,
-    },
-
-    image: {
-      type: String,
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
-
-export const Menu = mongoose.model("Menu", menuSchema);
+export default router;
