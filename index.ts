@@ -17,8 +17,9 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(express.json());
 app.use(cookieParser());
 const corsOptions = {
-  origin: "https://food-app-yt.onrender.com",
-  credentials: true,
+  origin: "http://localhost:5173", // Allow your frontend's origin
+  methods: "GET,POST,PUT,DELETE", // Specify allowed methods
+  credentials: true, // Allow cookies if needed
 };
 app.use(cors(corsOptions));
 //

@@ -15,6 +15,7 @@ import {
 export const signup = async (req: Request, res: Response) => {
   try {
     const { fullname, email, password, contact } = req.body;
+    console.log(fullname, email, password, contact);
 
     let user = await User.findOne({ email });
     if (user) {
@@ -23,7 +24,7 @@ export const signup = async (req: Request, res: Response) => {
         message: "User already exist with this email",
       });
     }
-
+    console.log(user);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const verificationToken = generateVerificationCode();
@@ -34,7 +35,7 @@ export const signup = async (req: Request, res: Response) => {
       password: hashedPassword,
       contact: Number(contact),
       verificationToken,
-      verificationTokenExpiresAt: Date.now() * 24 * 60 * 60 * 1000,
+      verificationTokenExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
     generateToken(res, user);
