@@ -62,39 +62,35 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect email or Password",
+        message: "Incorrect email or password",
       });
     }
-
     const isPasswordMatch = await bcrypt.compare(password, user.password);
-
     if (!isPasswordMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect  password",
+        message: "Incorrect email or password",
       });
     }
-
+    generateToken(res, user);
     user.lastLogin = new Date();
     await user.save();
 
-    //  send user
-
-    const userWithOutPassword = await User.findOne({ email }).select(
+    // send user without passowrd
+    const userWithoutPassword = await User.findOne({ email }).select(
       "-password"
     );
-
     return res.status(200).json({
       success: true,
-      message: `Welcome Back ${user.fullname}`,
-      user: userWithOutPassword,
+      message: `Welcome back ${user.fullname}`,
+      user: userWithoutPassword,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Interna server error" });
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
