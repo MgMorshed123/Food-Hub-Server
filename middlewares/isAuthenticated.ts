@@ -16,7 +16,7 @@ export const isAuthenticated = async (
 ) => {
   try {
     const token = req.cookies.token;
-    console.log("toeknm", token);
+    // console.log("toeknm", token);
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -25,6 +25,7 @@ export const isAuthenticated = async (
     }
     // verify the toekn
     const decode = jwt.verify(token, process.env.SECRET_KEY!) as jwt.JwtPayload;
+    console.log("first");
     // check is decoding was successfull
     if (!decode) {
       return res.status(401).json({

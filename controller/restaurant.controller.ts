@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { Restaurant } from "../models/restaurant.model";
 import { Multer } from "multer";
+import { Menu } from "../models/menu.model";
 import uploadImageOnCloudinary from "../utils/imageUpload";
 import { Order } from "../models/order.model";
+
 // import { Document } from "mongoose";
 // import { uploadImageOnCloudinary } from "../utils/imageUpload";
 
@@ -57,6 +59,7 @@ export const getRestaurant = async (req: Request, res: Response) => {
     const restaurant = await Restaurant.findOne({ user: req.id }).populate(
       "menus"
     );
+    console.log("restaurant", restaurant);
     if (!restaurant) {
       return res.status(404).json({
         success: false,

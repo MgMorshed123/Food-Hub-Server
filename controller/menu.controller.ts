@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import uploadImageOnCloudinary from "../utils/imageUpload";
-import { Restaurant } from "../models/restaurant.model";
 import { Menu } from "../models/menu.model";
-import mongoose from "mongoose";
+import { Restaurant } from "../models/restaurant.model";
+import mongoose, { ObjectId } from "mongoose";
 
 export const addMenu = async (req: Request, res: Response) => {
   try {
     const { name, description, price } = req.body;
+    console.log(name, description, price);
     const file = req.file;
+    console.log(file);
     if (!file) {
       return res.status(400).json({
         success: false,
@@ -37,7 +39,6 @@ export const addMenu = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 export const editMenu = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

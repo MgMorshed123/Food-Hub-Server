@@ -4,7 +4,7 @@ import connectDB from "./db/connectDB";
 import userRoutes from "./routes/user.route";
 import bodyParser from "body-parser";
 import restaurantRoute from "./routes/restaurant.route";
-import menuRoute from "./routes/restaurant.route";
+import menuRoute from "./routes/menu.route";
 
 dotenv.config();
 import cookieParser from "cookie-parser";
